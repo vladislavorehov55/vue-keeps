@@ -13,6 +13,7 @@
               @deleteNote="deleteNote"
               @returnFromTrash="returnFromTrash"
               @deleteForever="deleteForever"
+              @addToArchive="addToArchive"
       />
     </div>
 
@@ -31,7 +32,8 @@ export default {
     returnFromArchive: Function,
     deleteNote: Function,
     returnFromTrash: Function,
-    deleteForever: Function
+    deleteForever: Function,
+    addToArchive: Function
   }
 }
 </script>

@@ -7,6 +7,7 @@
             :deleteNote="deleteNote"
             :returnFromTrash="returnFromTrash"
             :deleteForever="deleteForever"
+            :addToArchive="addToArchive"
   />
   <MyHeader :notesDisplay="notesDisplay"
             @setLeftPanelVisability="setLeftPanelVisability"
@@ -183,13 +184,29 @@ export default {
       }
     },
     addToArchive(note, flag) {
-      const copyNote = {...note}
-      if (!flag) {
-        this.notes.main = this.notes.main.filter(item => item.id !== copyNote.id)
+      if (this.chosenNotesIdArr.length) {
+        this.notes.main = this.notes.main.filter(note => {
+          if (!this.chosenNotesIdArr.includes(note.id)) {
+            return true
+          }
+          const copyNote = {...note}
+          copyNote.isChosen = false
+          copyNote.type = 'archive'
+          this.notes.archive.push(copyNote)
+          this.chosenNotesIdArr = []
+        })
       }
-      copyNote.type = 'archive'
-      this.notes.archive.push(copyNote)
+      else {
+        const copyNote = {...note}
+        if (!flag) {
+          this.notes.main = this.notes.main.filter(item => item.id !== copyNote.id)
+        }
+        copyNote.type = 'archive'
+        this.notes.archive.push(copyNote)
+      }
     },
+
+
     returnFromArchive(note) {
       if (this.chosenNotesIdArr.length) {
         const newArchive = []
