@@ -74,6 +74,7 @@ export default {
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid black;
+  height: 75px;
 }
 .btnMenu {
   width: 24px;

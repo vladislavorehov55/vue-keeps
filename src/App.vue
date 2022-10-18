@@ -1,4 +1,9 @@
 <template>
+  <TopPanel v-if="chosenNotesIdArr.length"
+            :chosenNotesCount="chosenNotesIdArr.length"
+            @closeTopPanel="closeTopPanel"
+            :changeNoteBackgroundColor="changeNoteBackgroundColor"
+  />
   <MyHeader :notesDisplay="notesDisplay"
             @setLeftPanelVisability="setLeftPanelVisability"
             :activeLeftPanelListItemInd="activeLeftPanelListItemInd"
@@ -20,8 +25,7 @@
              @deleteForever="deleteForever"
              @addToArchive="addToArchive"
              @returnFromArchive="returnFromArchive"
-             :activeLeftPanelListItemInd="activeLeftPanelListItemInd"
-
+             :changeNoteBackgroundColor="changeNoteBackgroundColor"
   />
 </template>
 
@@ -30,10 +34,13 @@ import MyHeader from "@/components/MyHeader";
 import LeftPanel from "@/components/LeftPanel";
 import NotesList from "@/components/NotesList";
 import AddNoteForm from "@/components/AddNoteForm";
+import {computed} from "vue";
+import TopPanel from "@/components/TopPanel";
 
 export default {
   name: 'App',
   components: {
+    TopPanel,
     AddNoteForm,
     NotesList,
     MyHeader,
@@ -59,6 +66,12 @@ export default {
         archive: [],
         trash: []
       },
+      chosenNotesIdArr: []
+    }
+  },
+  provide() {
+    return {
+      activeLeftPanelListItemInd: computed(() => this.activeLeftPanelListItemInd)
     }
   },
   computed: {
@@ -76,6 +89,14 @@ export default {
     }
   },
   methods: {
+    closeTopPanel() {
+      this.chosenNotesIdArr = []
+      const key = Object.keys(this.notes)[this.activeLeftPanelListItemInd]
+      this.notes[key] = this.notes[key].map(note => {
+        note.isChosen = false
+        return note
+      })
+    },
     setLeftPanelVisability() {
       this.isOpenLeftPanel = !this.isOpenLeftPanel
     },
@@ -94,7 +115,14 @@ export default {
       )
     },
     chooseNote(id) {
-      this.notes.main = this.notes.main.map((note) => {
+      if (this.chosenNotesIdArr.includes(id)) {
+        this.chosenNotesIdArr.splice(this.chosenNotesIdArr.indexOf(id), 1)
+      }
+      else {
+        this.chosenNotesIdArr.push(id)
+      }
+      const key = Object.keys(this.notes)[this.activeLeftPanelListItemInd]
+      this.notes[key] = this.notes[key].map((note) => {
         if (note.id === id) note.isChosen = !note.isChosen
         return note
       })
@@ -125,6 +153,22 @@ export default {
       this.notes.archive = this.notes.archive.filter(note => note.id !== copyNote.id)
       copyNote.type = 'main'
       this.notes.main.push(copyNote)
+    },
+    changeNoteBackgroundColor(id, color) {
+      const key = Object.keys(this.notes)[this.activeLeftPanelListItemInd]
+      this.notes[key] = this.notes[key].map(note => {
+        if (this.chosenNotesIdArr.length) {
+          if (this.chosenNotesIdArr.includes(note.id)) {
+            note.backgroundColor = color
+          }
+        }
+        else {
+          if (note.id === id) {
+            note.backgroundColor = color
+          }
+        }
+        return note
+      })
     }
   }
 }

@@ -12,7 +12,7 @@
               @deleteForever="$emit('deleteForever', note.id)"
               @addToArchive="$emit('addToArchive', note)"
               @returnFromArchive="$emit('returnFromArchive', note)"
-              :activeLeftPanelListItemInd="activeLeftPanelListItemInd"
+              :changeNoteBackgroundColor="changeNoteBackgroundColor"
     />
   </ul>
 </template>
@@ -25,8 +25,8 @@ export default {
   props: {
     notes: Array,
     notesDisplay: String,
-    activeLeftPanelListItemInd: Number || null
-  }
+    changeNoteBackgroundColor: Function
+  },
 }
 </script>
 
