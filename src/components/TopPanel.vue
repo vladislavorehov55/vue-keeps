@@ -11,6 +11,8 @@
               :changeNoteBackgroundColor="changeNoteBackgroundColor"
               @returnFromArchive="returnFromArchive"
               @deleteNote="deleteNote"
+              @returnFromTrash="returnFromTrash"
+              @deleteForever="deleteForever"
       />
     </div>
 
@@ -27,7 +29,9 @@ export default {
     chosenNotesCount: Number,
     changeNoteBackgroundColor: Function,
     returnFromArchive: Function,
-    deleteNote: Function
+    deleteNote: Function,
+    returnFromTrash: Function,
+    deleteForever: Function
   }
 }
 </script>

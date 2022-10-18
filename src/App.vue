@@ -5,6 +5,8 @@
             :changeNoteBackgroundColor="changeNoteBackgroundColor"
             :returnFromArchive="returnFromArchive"
             :deleteNote="deleteNote"
+            :returnFromTrash="returnFromTrash"
+            :deleteForever="deleteForever"
   />
   <MyHeader :notesDisplay="notesDisplay"
             @setLeftPanelVisability="setLeftPanelVisability"
@@ -154,11 +156,31 @@ export default {
       }
     },
     returnFromTrash(note) {
-      this.notes.trash = this.notes.trash.filter(item => item.id !== note.id)
-      this.notes[note.type].push(note)
+      if (this.chosenNotesIdArr.length) {
+        this.notes.trash = this.notes.trash.filter(item => {
+          if (!this.chosenNotesIdArr.includes(item.id)) {
+            return true
+          }
+          const copyNote = {...item}
+          copyNote.isChosen = false
+          this.notes[copyNote.type].push(copyNote)
+          return false
+        })
+        this.chosenNotesIdArr = []
+      }
+      else {
+        this.notes.trash = this.notes.trash.filter(item => item.id !== note.id)
+        this.notes[note.type].push(note)
+      }
     },
     deleteForever(id) {
-      this.notes.trash = this.notes.trash.filter(note => note.id !== id)
+      if (this.chosenNotesIdArr.length) {
+        this.notes.trash = this.notes.trash.filter(note => !this.chosenNotesIdArr.includes(note.id))
+        this.chosenNotesIdArr = []
+      }
+      else {
+        this.notes.trash = this.notes.trash.filter(note => note.id !== id)
+      }
     },
     addToArchive(note, flag) {
       const copyNote = {...note}
