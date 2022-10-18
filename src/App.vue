@@ -3,6 +3,8 @@
             :chosenNotesCount="chosenNotesIdArr.length"
             @closeTopPanel="closeTopPanel"
             :changeNoteBackgroundColor="changeNoteBackgroundColor"
+            :returnFromArchive="returnFromArchive"
+            :deleteNote="deleteNote"
   />
   <MyHeader :notesDisplay="notesDisplay"
             @setLeftPanelVisability="setLeftPanelVisability"
@@ -127,11 +129,29 @@ export default {
         return note
       })
     },
+
+
     deleteNote(note) {
-      const copyNote = {...note}
       const key = Object.keys(this.notes)[Number(this.activeLeftPanelListItemInd)]
-      this.notes[key] = this.notes[key].filter(item => item.id !== copyNote.id)
-      this.notes.trash.push(copyNote)
+      if (this.chosenNotesIdArr.length) {
+        const newTrash = [...this.notes.trash]
+        this.notes[key] = this.notes[key].filter(note => {
+          if (!this.chosenNotesIdArr.includes(note.id)) {
+            return note
+          }
+          const copyNote = {...note}
+          copyNote.isChosen = false
+          copyNote.type = key
+          newTrash.push(copyNote)
+        })
+        this.notes.trash = newTrash
+        this.chosenNotesIdArr = []
+      }
+      else {
+        const copyNote = {...note}
+        this.notes[key] = this.notes[key].filter(item => item.id !== copyNote.id)
+        this.notes.trash.push(copyNote)
+      }
     },
     returnFromTrash(note) {
       this.notes.trash = this.notes.trash.filter(item => item.id !== note.id)
@@ -149,10 +169,29 @@ export default {
       this.notes.archive.push(copyNote)
     },
     returnFromArchive(note) {
-      const copyNote = {...note}
-      this.notes.archive = this.notes.archive.filter(note => note.id !== copyNote.id)
-      copyNote.type = 'main'
-      this.notes.main.push(copyNote)
+      if (this.chosenNotesIdArr.length) {
+        const newArchive = []
+        this.notes.archive.forEach(note => {
+          const copyNote = {...note}
+          if (this.chosenNotesIdArr.includes(note.id)) {
+            copyNote.type = 'main'
+            copyNote.isChosen = false
+            this.notes.main.push(copyNote)
+          }
+          else {
+            newArchive.push(copyNote)
+          }
+        })
+        this.notes.archive = newArchive
+      }
+      else {
+        const copyNote = {...note}
+        this.notes.archive = this.notes.archive.filter(note => note.id !== copyNote.id)
+        copyNote.type = 'main'
+        this.notes.main.push(copyNote)
+      }
+      this.chosenNotesIdArr = []
+
     },
     changeNoteBackgroundColor(id, color) {
       const key = Object.keys(this.notes)[this.activeLeftPanelListItemInd]

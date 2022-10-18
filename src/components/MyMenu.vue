@@ -54,7 +54,8 @@ export default {
     inAddForm: Boolean,
     inTopPanel: Boolean,
     noteId: Number,
-    changeNoteBackgroundColor: Function
+    changeNoteBackgroundColor: Function,
+    returnFromArchive: Function
   },
   data() {
     return {

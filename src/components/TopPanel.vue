@@ -9,6 +9,8 @@
     <div :class="$style.rightGroup">
       <MyMenu :inTopPanel="true"
               :changeNoteBackgroundColor="changeNoteBackgroundColor"
+              @returnFromArchive="returnFromArchive"
+              @deleteNote="deleteNote"
       />
     </div>
 
@@ -23,7 +25,9 @@ export default {
   components: {MyMenu, MyButton},
   props: {
     chosenNotesCount: Number,
-    changeNoteBackgroundColor: Function
+    changeNoteBackgroundColor: Function,
+    returnFromArchive: Function,
+    deleteNote: Function
   }
 }
 </script>
