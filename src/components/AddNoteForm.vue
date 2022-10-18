@@ -94,6 +94,9 @@ export default {
       this.imgList = this.imgList.filter(item => item.id !== id)
     },
     addToArchive() {
+      if (!this.text && !this.title && !this.imgList.length) {
+        return
+      }
       const note = {title: this.title, text: this.text, backgroundColor: this.backgroundColor, imgList: this.imgList}
       this.text = ''
       this.textHeight = ''

@@ -212,7 +212,7 @@ export default {
         const newArchive = []
         this.notes.archive.forEach(note => {
           const copyNote = {...note}
-          if (this.chosenNotesIdArr.includes(note.id)) {
+          if (this.chosenNotesIdArr.includes(copyNote.id)) {
             copyNote.type = 'main'
             copyNote.isChosen = false
             this.notes.main.push(copyNote)
